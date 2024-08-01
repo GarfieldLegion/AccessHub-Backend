@@ -4,7 +4,6 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 require("dotenv").config();
 const cors = require("cors");
-const indexRouter = require("./routes/index");
 const apiRouter = require("./routes/api");
 const apiResponse = require("./helpers/apiResponse");
 const pusher = require("./helpers/pusher");
@@ -31,7 +30,8 @@ mongoose
   });
 const db = mongoose.connection;
 
-pusher.initializePusher();
+//initialize pusher
+// pusher.initializePusher();
 
 const app = express();
 
@@ -49,8 +49,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use("/public", express.static("public"));
 //Route Prefixes
-app.use("/", indexRouter);
-app.use("/goldapi/", apiRouter);
+app.use("/accessHubApi/", apiRouter);
 
 // throw 404 if URL not found
 app.all("*", function (req, res) {

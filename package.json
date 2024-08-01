@@ -30,6 +30,8 @@
     "nodemailer": "^6.9.3",
     "otpauth": "^9.1.3",
     "prop-types": "^15.7.2",
+    "pusher": "^5.2.0",
+    "socket.io": "^4.7.5",
     "stripe": "^14.23.0",
     "underscore": "^1.13.6",
     "unique-string-generator": "^1.1.1",
