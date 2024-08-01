@@ -4,33 +4,38 @@
  * Module dependencies.
  */
 
-var app = require('../app');
-var debug = require('debug')('rest-api-nodejs-mongodb:server');
-var http = require('http');
-const socketIo = require('socket.io')
+var app = require("../app");
+var debug = require("debug")("rest-api-nodejs-mongodb:server");
+var http = require("http");
+const { Server } = require("socket.io");
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '2000');
-app.set('port', port);
+var port = normalizePort(process.env.PORT || "2000");
+app.set("port", port);
 
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
-const io = socketIo(server);
-io.on('connection', (socket) => {
-  console.log('User connected');
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins for testing; restrict in production
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log("User connected");
   // Listen for incoming messages
-  socket.on('message', (message) => {
-    console.log('Message:', message);
+  socket.on("message", (message) => {
+    console.log("Message:", message);
     // Broadcast the message to all connected clients
-    io.emit('message', message);
+    io.emit("message", message);
   });
-  socket.on('disconnect', () => {
-    console.log('User disconnected');
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
   });
 });
 /**
@@ -38,8 +43,8 @@ io.on('connection', (socket) => {
  */
 
 server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+server.on("error", onError);
+server.on("listening", onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -66,22 +71,20 @@ function normalizePort(val) {
  */
 
 function onError(error) {
-  if (error.syscall !== 'listen') {
+  if (error.syscall !== "listen") {
     throw error;
   }
 
-  var bind = typeof port === 'string'
-    ? 'Pipe ' + port
-    : 'Port ' + port;
+  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case 'EACCES':
-      console.error(bind + ' requires elevated privileges');
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
       process.exit(1);
       break;
-    case 'EADDRINUSE':
-      console.error(bind + ' is already in use');
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
       process.exit(1);
       break;
     default:
@@ -95,8 +98,6 @@ function onError(error) {
 
 function onListening() {
   var addr = server.address();
-  var bind = typeof addr === 'string'
-    ? 'pipe ' + addr
-    : 'port ' + addr.port;
-  debug('Listening on ' + bind);
+  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  debug("Listening on " + bind);
 }
